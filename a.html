@@ -1,0 +1,179 @@
+<!DOCTYPE html> <html lang="es"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>/a/ - Arte | 3chan</title> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"> <style> body { margin: 0; font-family: 'Poppins', sans-serif; background: linear-gradient(to bottom, #b48aff 0%, #ffffff 25%); color: #333; text-align: center; } .back-btn { position: absolute; top: 15px; left: 15px; background-color: #7b2cbf; color: white; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: background 0.3s; } .back-btn:hover { background-color: #9d4edd; } header { margin-top: 60px; } .board-title { color: #006400; font-size: 28px; margin-bottom: 5px; } .subtitle { color: #555; font-size: 16px; margin-bottom: 25px; } button { padding: 8px 14px; cursor: pointer; background-color: #006400; border: none; border-radius: 8px; color: white; font-weight: 600; transition: background 0.3s; } button:hover { background-color: #008000; } .view-replies-btn { background-color: #008b00; margin-top: 6px; margin-right: 10px; } textarea, input { width: 90%; padding: 7px; margin-top: 6px; border-radius: 5px; border: 1px solid #ccc; font-family: 'Poppins', sans-serif; } section.threads h2 { color: #006400; font-size: 22px; margin-top: 30px; } .thread-item { border: 2px solid #4b0082; border-radius: 15px; padding: 10px; margin: 15px auto; background-color: #fff; display: flex; align-items: flex-start; max-width: 95%; text-align: left; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); } .thread-item img { width: 150px; height: auto; cursor: pointer; margin-right: 10px; border-radius: 8px; flex-shrink: 0; } .thread-content { flex: 1; line-height: 1.5; position: relative; } .thread-meta { font-size: 0.9em; color: #555; margin-bottom: 4px; } .thread-meta b { color: #008000; } .thread-controls { margin-top: 8px; display: flex; align-items: center; gap: 8px; } /* Botón de like estilo "sin recuadro" y gris oscuro */ .like-btn { background: none !important; border: none !important; padding: 0 !important; margin: 0 !important; cursor: pointer; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; user-select: none; color: #444 !important; } .like-btn:active { transform: translateY(1px); } .reply-item { border: 1px solid #4b0082; border-radius: 10px; padding: 8px; margin-top: 8px; background: #fafafa; color: #555; position: relative; } .reply-meta { font-size: 0.85em; margin-bottom: 6px; } .reply-likes { margin-top: 6px; display: flex; align-items: center; gap: 8px; } .reply-form { border: 1px solid #ccc; border-radius: 10px; padding: 8px; margin-top: 8px; background: #f9f9f9; } .hidden { display: none; } .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; } .modal.active { display: flex; } .close-modal { position: absolute; top: 20px; right: 25px; font-size: 30px; color: white; cursor: pointer; } footer { margin-top: 60px; font-size: 14px; color: #555; padding-bottom: 20px; } @media (max-width: 600px) { .thread-item { flex-direction: column; align-items: center; } .thread-item img { width: 90%; margin-bottom: 8px; } .thread-content { width: 100%; } .thread-controls { justify-content: center; } } </style> </head> <body>
+
+<a href="index.html" class="back-btn">◄ Volver</a>
+
+<header> <h1 class="board-title">/a/ - Arte</h1> <p class="subtitle">Aquí se publica contenido artístico y dibujos hechos a mano de usuarios</p> </header> <main> <section> <button id="createThreadBtn">✚ Crear Publicación</button>
+  <form id="threadForm" class="hidden">
+    <h3>Participa creando publicaciones para compartir y debatir</h3>
+    <label>Apodo (Opcional):</label>
+    <input type="text" id="username" placeholder="Anónimo">
+    
+    <label>Descripción:</label>
+    <textarea id="description" rows="4" placeholder="Escribe tu mensaje..."></textarea>
+    
+    <label>Seleccionar imagen:</label>
+    <input type="file" id="imageInput" accept="image/*">
+
+    <button type="submit" id="publishBtn">Publicar</button>
+  </form>
+</section>
+
+<section class="threads">
+  <h2>Hilos recientes</h2>
+  <div id="threadList"></div>
+</section>
+
+</main> <footer> <p style="color: #006400; font-weight: bold;">3chan © 2025 - Subforo /a/</p> </footer> <div class="modal" id="imageModal"> <span class="close-modal" id="closeModal">&times;</span> <img id="modalImg" src="" alt="Imagen ampliada"> </div> <script> const admins = [ { nombre: "TonKun", clave: "orestenevado46dog" }, { nombre: "Abril", clave: "asiquetrepate" }, { nombre: "Drakarcat", clave: "cat999" } ]; const STORAGE_KEY = 'actThreads_a'; const USER_ID_KEY = 'userIds'; const USER_LIKES_KEY = 'userLikes_a'; const MAX_LIKES_THREAD = 100000; const MAX_LIKES_REPLY = 50000; let userIds = JSON.parse(localStorage.getItem(USER_ID_KEY)) || {}; let userLikes = JSON.parse(localStorage.getItem(USER_LIKES_KEY)) || { threads: {}, replies: {} }; const createBtn = document.getElementById('createThreadBtn'); const form = document.getElementById('threadForm'); const threadList = document.getElementById('threadList'); createBtn.addEventListener('click', () => form.classList.toggle('hidden')); function generarIdUnico(prefix = '') { const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let id; const threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; const usados = new Set(); threads.forEach(t => { usados.add(t.id); if (t.replies) t.replies.forEach(r => usados.add(r.replyId)); }); do { id = prefix + Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join(''); } while (usados.has(id)); return id; } form.addEventListener('submit', (e) => { e.preventDefault(); const username = document.getElementById('username').value || "Anónimo"; const description = document.getElementById('description').value; const imageInput = document.getElementById('imageInput'); if (!description) return alert("Por favor, escribe una descripción."); const now = new Date(); const date = now.toLocaleDateString(); const time = now.toLocaleTimeString(); const id = generarIdUnico('T-'); function guardarHilo(imageURL) { const newThread = { username, description, imageURL, date, time, id, replies: [], likes: 0 }; let threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; threads.unshift(newThread); if (threads.length > 35) threads = threads.slice(0, 35); localStorage.setItem(STORAGE_KEY, JSON.stringify(threads)); renderThreads(); form.reset(); form.classList.add('hidden'); } if (imageInput.files.length > 0) { const reader = new FileReader(); reader.onload = () => guardarHilo(reader.result); reader.readAsDataURL(imageInput.files[0]); } else guardarHilo(''); }); function obtenerIdUsuario(username) { if (!username) username = "Anónimo"; if (userIds[username]) return userIds[username]; const newId = generarIdUnico('U-'); userIds[username] = newId; localStorage.setItem(USER_ID_KEY, JSON.stringify(userIds)); return newId; } function renderThreads() { const threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; const openReplies = {}; threads.forEach(t => { const box = document.getElementById(`respBox-${t.id}`); if (box && !box.classList.contains('hidden')) openReplies[t.id] = true; }); threadList.innerHTML = ""; threads.forEach(t => { const threadEl = document.createElement('div'); threadEl.className = "thread-item"; const repliesHTML = (t.replies || []).map(r => { const liked = !!userLikes.replies[r.replyId]; const likeText = liked ? `💗 ${r.likes} Me gusta` : `🖤 Me gusta`; const likeBtn = `<button class="like-btn" onclick="toggleLikeReply('${t.id}','${r.replyId}')">${likeText}</button>`; const media = r.file ? (r.file.startsWith('data:image') ? `<img src='${r.file}' style="max-width:100%;border-radius:6px;cursor:pointer" onclick='ampliarImagen("${r.file}")'>` : `<video src='${r.file}' controls style="max-width:100%;border-radius:6px"></video>`) : ''; return ` <div class="reply-item" id="reply-${r.replyId}"> <div class="reply-meta"> <b>${r.username}</b> | ID: ${r.userId}${r.citado ? ` | Para: ${r.citado}` : '' } </div> <div class="reply-text">${r.texto}</div> ${media} <div class="reply-likes"> <div>${likeBtn}</div> </div> </div> `; }).join(''); const threadLiked = !!userLikes.threads[t.id]; const threadLikeText = threadLiked ? `💗 ${t.likes || 0} Me gusta` : `🖤 Me gusta`; threadEl.innerHTML = ` <img src="${t.imageURL || 'https://via.placeholder.com/180x180?text=Sin+imagen'}" alt="Imagen del hilo" onclick="ampliarImagen('${t.imageURL || ''}')"> <div class="thread-content"> <div class="thread-meta"> <b>${t.username}</b> | ${t.date} ${t.time} | ID: <span>${t.id}</span> </div> <p>${escapeHtml(t.description)}</p> <div class="thread-controls"> <button onclick="mostrarFormularioRespuesta('${t.id}')">Responder</button> <button onclick="toggleRespuestas('${t.id}')" class="view-replies-btn"> Ver respuestas (${(t.replies || []).length}) </button> <button class="like-btn" onclick="toggleLikeThread('${t.id}')">${threadLikeText}</button> </div> <div class="replies-container ${!openReplies[t.id] ? 'hidden' : ''}" id="respBox-${t.id}"> ${repliesHTML || '<p style="color:#777">Sin respuestas aún.</p>'} </div> <div id="replyForm-${t.id}" class="reply-form hidden"> <label>Nombre o Apodo:</label> <input type="text" id="replyName-${t.id}" placeholder="Anónimo"> <label>Cita (ID del usuario):</label> <input type="text" id="replyQuote-${t.id}" placeholder="Ej: ${t.id}"> <label>Escribe tu respuesta:</label> <textarea id="replyText-${t.id}" rows="3" placeholder="Escribe aquí tu respuesta..."></textarea>
+          <label>Seleccionar archivo (Opcional):</label>
+          <input type="file" id="replyFile-${t.id}" accept="image/*,video/*">
+
+          <button onclick="enviarRespuesta('${t.id}')">Enviar</button>
+        </div>
+      </div>
+    `;
+    threadList.appendChild(threadEl);
+  });
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return text.replace(/[&<>"']/g, function(m) {
+    return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[m];
+  });
+}
+
+function mostrarFormularioRespuesta(id) {
+  const form = document.getElementById(`replyForm-${id}`);
+  if (!form) return;
+  form.classList.toggle('hidden');
+}
+
+function toggleRespuestas(id) {
+  const box = document.getElementById(`respBox-${id}`);
+  if (!box) return;
+  box.classList.toggle("hidden");
+}
+
+function enviarRespuesta(id) {
+  const threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  const hilo = threads.find(t => t.id === id);
+  if (!hilo) return;
+
+  const username = document.getElementById(`replyName-${id}`).value || "Anónimo";
+  const userId = obtenerIdUsuario(username);
+  const citado = document.getElementById(`replyQuote-${id}`).value || '';
+  const texto = document.getElementById(`replyText-${id}`).value;
+  const fileInput = document.getElementById(`replyFile-${id}`);
+  if (!texto.trim() && fileInput.files.length === 0) return alert("Escribe una respuesta o adjunta un archivo.");
+
+  if (hilo.replies.length >= 90) {
+    return alert("Este hilo alcanzó el máximo de 90 respuestas.");
+  }
+
+  const replyId = generarIdUnico('R-');
+
+  function guardarRespuesta(fileData) {
+    const newReply = { username, citado, texto, file: fileData, userId, replyId, likes: 0 };
+    hilo.replies.push(newReply);
+
+    if (hilo.replies.length > 90)
+      hilo.replies = hilo.replies.slice(-90);
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+
+    renderThreads();
+
+    document.getElementById(`respBox-${id}`).classList.remove('hidden');
+  }
+
+  if (fileInput.files.length > 0) {
+    const reader = new FileReader();
+    reader.onload = () => guardarRespuesta(reader.result);
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    guardarRespuesta(null);
+  }
+}
+
+function eliminarHilo(id) {
+  const nombre = prompt("Nombre del administrador:");
+  const clave = prompt("Clave del administrador:");
+  const esAdmin = admins.some(a => a.nombre === nombre && a.clave === clave);
+  if (!esAdmin) return alert("Acceso denegado. Solo los administradores pueden eliminar hilos.");
+  if (!confirm("¿Seguro que deseas eliminar este hilo?")) return;
+  let threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  threads = threads.filter(t => t.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+  renderThreads();
+}
+
+function toggleLikeThread(threadId) {
+  const threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  const hilo = threads.find(t => t.id === threadId);
+  if (!hilo) return;
+
+  const liked = !!userLikes.threads[threadId];
+
+  if (!liked) {
+    if ((hilo.likes || 0) >= MAX_LIKES_THREAD) return alert("Este hilo alcanzó el máximo de Me gustas.");
+    hilo.likes = (hilo.likes || 0) + 1;
+    userLikes.threads[threadId] = true;
+  } else {
+    hilo.likes = Math.max(0, (hilo.likes || 0) - 1);
+    delete userLikes.threads[threadId];
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+  localStorage.setItem(USER_LIKES_KEY, JSON.stringify(userLikes));
+  renderThreads();
+}
+
+function toggleLikeReply(threadId, replyId) {
+  const threads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  const hilo = threads.find(t => t.id === threadId);
+  if (!hilo) return;
+  const reply = (hilo.replies || []).find(r => r.replyId === replyId);
+  if (!reply) return;
+
+  const liked = !!userLikes.replies[replyId];
+
+  if (!liked) {
+    if ((reply.likes || 0) >= MAX_LIKES_REPLY) return alert("Esta respuesta alcanzó el máximo de Me gustas.");
+    reply.likes = (reply.likes || 0) + 1;
+    userLikes.replies[replyId] = true;
+  } else {
+    reply.likes = Math.max(0, (reply.likes || 0) - 1);
+    delete userLikes.replies[replyId];
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(threads));
+  localStorage.setItem(USER_LIKES_KEY, JSON.stringify(userLikes));
+  renderThreads();
+}
+
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImg");
+const closeModal = document.getElementById("closeModal");
+
+function ampliarImagen(url) {
+  if (!url) return;
+  modalImg.src = url;
+  modal.classList.add("active");
+}
+
+closeModal.addEventListener("click", () => modal.classList.remove("active"));
+window.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("active"); });
+
+window.eliminarHilo = eliminarHilo;
+window.mostrarFormularioRespuesta = mostrarFormularioRespuesta;
+window.enviarRespuesta = enviarRespuesta;
+window.toggleRespuestas = toggleRespuestas;
+window.ampliarImagen = ampliarImagen;
+window.toggleLikeThread = toggleLikeThread;
+window.toggleLikeReply = toggleLikeReply;
+
+if (!localStorage.getItem(USER_LIKES_KEY)) localStorage.setItem(USER_LIKES_KEY, JSON.stringify(userLikes));
+
+renderThreads();
+
+</script> </body> </html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>  
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3chan - Preguntas Frecuentes</title>
+
+  <!-- Fuente estilo Instagram -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #b48aff 0%, #ffffff 40%);
+      color: #333333;
+      text-align: center;
+    }
+
+    header img {
+      width: 220px;
+      margin-top: 40px;
+    }
+
+    h1 {
+      display: none;
+    }
+
+    /* Título FAQ */
+    .faq-title {
+      margin: 30px auto 20px;
+      width: 85%;
+      max-width: 780px;
+      background-color: #e8d4ff;
+      border: 3px solid #4b0082;
+      border-radius: 20px;
+      padding: 20px;
+      font-size: 26px;
+      color: #4b0082;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Caja de cada pregunta */
+    .faq-box {
+      width: 85%;
+      max-width: 780px;
+      margin: 20px auto;
+      background-color: #e8d4ff;
+      border: 3px solid #4b0082;
+      border-radius: 18px;
+      padding: 15px 20px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transition: 0.2s;
+    }
+
+    .faq-box:hover {
+      background-color: #d8c0ff;
+    }
+
+    .faq-question {
+      color: #4b0082;
+      font-size: 19px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .faq-answer {
+      margin-top: 12px;
+      font-size: 17px;
+      line-height: 1.6;
+      display: none; /* OCULTO HASTA QUE SE DESPLIEGUE */
+    }
+
+    /* Botón volver */
+    .volver-btn {
+      display: inline-block;
+      margin: 40px 0 30px;
+      background-color: #7a42c8;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .volver-btn:hover {
+      background-color: #5e2ea1;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #555;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <img src="3chan.icon.png" alt="Logo de 3chan">
+</header>
+
+<div class="faq-title">FAQ – Preguntas Frecuentes de 3chan</div>
+
+<!-- PREGUNTA 1 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Qué es 3chan?</p>
+  <div class="faq-answer">
+    3chan es un foro de imágenes anónimo en español donde cualquier persona puede compartir ideas, imágenes, historias, arte, música o debates sin necesidad de registrarse.<br><br>
+    Su esencia es la libertad de expresión sin recibir juzgamientos.
+  </div>
+</div>
+
+<!-- PREGUNTA 2 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Por qué se creó 3chan?</p>
+  <div class="faq-answer">
+    3chan fue creado como un espacio libre para las comunidades de habla hispana.<br><br>
+    Muchos foros tradicionales se volvieron restrictivos o cerrados, y casi no existen foros de imágenes modernos en español.<br><br>
+    3chan busca recuperar el espíritu original de los foros anónimos, pero con una visión más ordenada, responsable y cultural.
+  </div>
+</div>
+
+<!-- PREGUNTA 3 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Por qué es un sitio anónimo?</p>
+  <div class="faq-answer">
+    El anonimato permite que las personas expresen ideas sin miedo al juicio social o la exposición pública.<br><br>
+    En 3chan no hay registros, nombres de usuario ni perfiles personales.<br>
+    Solo importa lo que compartís, no quién sos.<br><br>
+    Aun así, el anonimato no debe usarse para infringir la ley ni dañar a otros usuarios.
+  </div>
+</div>
+
+<!-- PREGUNTA 4 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Por qué está permitido el contenido NSFW?</p>
+  <div class="faq-answer">
+    3chan respeta la libertad artística y expresiva, incluyendo contenido para adultos, pero lo limita a secciones específicas.<br><br>
+    El acceso a los Subforos para Adultos es solo para mayores de 18 años o más.<br><br>
+    Todo material ilegal o explícitamente prohibido (como pornografía infantil, gore o zoofilia) es eliminado de inmediato.
+  </div>
+</div>
+
+<!-- PREGUNTA 5 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Cómo puedo publicar en 3chan?</p>
+  <div class="faq-answer">
+    1. Entra al subforo en el que deseas publicar.<br>
+    2. Haz clic en “Crear Publicación”.<br>
+    3. Se abrirá un formulario para crear el hilo.<br>
+    4. Escribe un apodo (o usa “Anónimo”), agrega una descripción y sube una imagen.<br>
+    5. Presiona “Publicar”.<br>
+    6. Tu hilo aparecerá en “Hilos Recientes”.
+  </div>
+</div>
+
+<!-- PREGUNTA 6 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Qué son las IDs de las publicaciones?</p>
+  <div class="faq-answer">
+    Cada comentario tiene una ID como:<br><br>
+    <b>ID: 9K5T7SB2</b><br><br>
+    Esta ID no representa tu IP ni tu ubicación.<br>
+    Es un código aleatorio que permite identificar usuarios dentro de una misma publicación sin perder el anonimato.
+  </div>
+</div>
+
+<!-- PREGUNTA 7 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Quién es el creador de 3chan?</p>
+  <div class="faq-answer">
+    3chan fue creado por TonKun, un desarrollador y diseñador argentino.<br>
+    El proyecto nació como una propuesta comunitaria, no corporativa.
+  </div>
+</div>
+
+<!-- PREGUNTA 8 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿3chan busca fama o dinero?</p>
+  <div class="faq-answer">
+    No. 3chan no fue creado con fines comerciales ni para obtener fama.<br>
+    Su meta es brindar un espacio libre en español, donde las ideas valgan más que la identidad.
+  </div>
+</div>
+
+<!-- PREGUNTA 9 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Cómo se financia 3chan?</p>
+  <div class="faq-answer">
+    El proyecto se sostiene gracias al esfuerzo personal del creador.<br>
+    En el futuro podría incluir donaciones voluntarias, siempre sin comprometer la privacidad.
+  </div>
+</div>
+
+<!-- PREGUNTA 10 -->
+<div class="faq-box" onclick="toggleFAQ(this)">
+  <p class="faq-question">¿Cómo puedo contactar al equipo?</p>
+  <div class="faq-answer">
+    Puedes escribir a:<br><br>
+    <b>3chanforum@gmail.com</b><br><br>
+    La administración revisa los mensajes regularmente y responderá según la naturaleza de la consulta.
+  </div>
+</div>
+
+<!-- BOTÓN VOLVER -->
+<a href="index.html" class="volver-btn">◄ Volver</a>
+
+<footer>
+  3chan © 2025 - Todos los derechos reservados
+</footer>
+
+<!-- SCRIPT PARA DESPLEGAR FAQ -->
+<script>
+  function toggleFAQ(box) {
+    const answer = box.querySelector('.faq-answer');
+    const visible = answer.style.display === 'block';
+    answer.style.display = visible ? 'none' : 'block';
+  }
+</script>
+
+</body>
+</html>
